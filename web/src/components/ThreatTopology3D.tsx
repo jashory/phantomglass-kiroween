@@ -160,8 +160,9 @@ export function ThreatTopology3D({ nodes, blastRadiusScore }: ThreatTopology3DPr
       ctx.fill();
       ctx.stroke();
 
-      // Depth-sorted permission nodes
+      // Depth-sorted permission nodes with 2D label collision suppression
       projected.sort((a, b) => a.z - b.z);
+      const placedLabels: Array<{ x: number; y: number; w: number; h: number }> = [];
       for (const p of projected) {
         const nodeColor =
           p.node.risk === 'CRITICAL'
@@ -178,10 +179,19 @@ export function ThreatTopology3D({ nodes, blastRadiusScore }: ThreatTopology3DPr
         ctx.arc(p.px, p.py, dotR, 0, Math.PI * 2);
         ctx.fill();
 
-        if (p.z > -0.35 || projected.length <= 8) {
+        if (p.z > -0.25 || projected.length <= 8) {
           ctx.font = '500 10px "JetBrains Mono", monospace';
-          ctx.fillStyle = `rgba(241, 245, 249, ${Math.min(1, 0.52 + (p.z + 1) * 0.32)})`;
-          ctx.fillText(p.node.label, p.px + dotR + 6, p.py + 3);
+          const textW = ctx.measureText(p.node.label).width;
+          const lx = Math.min(w - textW - 8, Math.max(8, p.px + dotR + 6));
+          const ly = Math.min(h - 14, Math.max(24, p.py + 3));
+          const overlaps = placedLabels.some(
+            (b) => lx < b.x + b.w + 6 && lx + textW + 6 > b.x && ly - 10 < b.y + 4 && ly + 4 > b.y - 10
+          );
+          if (!overlaps) {
+            placedLabels.push({ x: lx, y: ly, w: textW, h: 12 });
+            ctx.fillStyle = `rgba(241, 245, 249, ${Math.min(1, 0.56 + (p.z + 1) * 0.32)})`;
+            ctx.fillText(p.node.label, lx, ly);
+          }
         }
       }
 

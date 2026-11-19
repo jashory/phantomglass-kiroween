@@ -192,7 +192,7 @@ export default function App() {
   }, [selectedMcpTool, permissionReport, secretReport, forensicReport]);
 
   return (
-    <div className="min-h-screen grid-lab-bg text-slate-100">
+    <div className="min-h-screen overflow-x-hidden grid-lab-bg text-slate-100">
       {/* Top Telemetry Bar */}
       <header className="sticky top-0 z-30 border-b border-slate-800/90 bg-[#070B14]/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -272,10 +272,10 @@ export default function App() {
           className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4"
         >
           {[
-            { id: 'exorcist', label: '1. EXIF & Photo Exorcist', icon: FileImage },
-            { id: 'permissions', label: '2. Permission 3D Lab', icon: ShieldAlert },
+            { id: 'exorcist', label: '1. EXIF Exorcist', icon: FileImage },
+            { id: 'permissions', label: '2. Permission 3D', icon: ShieldAlert },
             { id: 'airgap', label: '3. Secret Air-Gap', icon: Lock },
-            { id: 'kiro', label: '4. Kiro Specs & MCP', icon: FolderGit2 }
+            { id: 'kiro', label: '4. Kiro & MCP', icon: FolderGit2 }
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -372,7 +372,7 @@ export default function App() {
             </div>
 
             {/* Right: Binary Forensic Report & Cryptographic Exorcist */}
-            <div className="space-y-4 lg:col-span-7">
+            <div className="min-w-0 space-y-4 lg:col-span-7">
               {!forensicReport ? (
                 <div className="glass-panel flex min-h-80 flex-col items-center justify-center rounded-2xl p-8 text-center">
                   <ShieldCheck className="h-10 w-10 text-emerald-400/80" />
@@ -534,7 +534,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="space-y-4 lg:col-span-7">
+            <div className="min-w-0 space-y-4 lg:col-span-7">
               <div className="glass-panel rounded-2xl p-5">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div>
