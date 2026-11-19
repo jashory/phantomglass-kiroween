@@ -42,16 +42,27 @@ test('Android permission auditor detects silent camera-roll harvesting chain & g
       <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
       <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
       <uses-permission android:name="android.permission.RECORD_AUDIO" />
+      <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+      <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     </manifest>
   `;
   const report = auditAndroidPermissions(xml, 'com.social.harvester');
   assert.equal(report.cloudBytesSent, 0);
   assert.ok(report.blastRadiusScore >= 60, `Expected high score, got ${report.blastRadiusScore}`);
   assert.ok(report.detectedChains.some((c) => c.id === 'silent-gallery-harvest'));
+  const allCmds = report.detectedChains.flatMap((c) => c.adbRevokeCommands);
   assert.ok(
-    report.detectedChains[0].adbRevokeCommands.some((cmd) =>
+    allCmds.some((cmd) =>
       cmd.includes('adb shell pm revoke com.social.harvester android.permission.READ_MEDIA_IMAGES')
     )
+  );
+  assert.ok(
+    !allCmds.some((cmd) => cmd.includes('pm revoke com.social.harvester android.permission.FOREGROUND_SERVICE_MICROPHONE')),
+    'Android 14 non-runtime FOREGROUND_SERVICE_MICROPHONE must not be passed to pm revoke'
+  );
+  assert.ok(
+    allCmds.some((cmd) => cmd.includes('adb shell appops set com.social.harvester SYSTEM_ALERT_WINDOW deny')),
+    'SYSTEM_ALERT_WINDOW must use appops set ... deny on Android 14'
   );
 });
 
