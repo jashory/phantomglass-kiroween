@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PhantomGlass Side-Panel Shield</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 14px;
+        background: #070b14;
+        color: #f1f5f9;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 13px;
+      }
+      .card {
+        background: #0e1525;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 11px;
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(34, 197, 94, 0.4);
+      }
+      .btn {
+        width: 100%;
+        padding: 9px 12px;
+        border-radius: 8px;
+        border: none;
+        background: #22c55e;
+        color: #052e16;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .btn:hover { background: #4ade80; }
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        background: #060a13;
+        color: #e2e8f0;
+        border: 1px solid #1e293b;
+        border-radius: 8px;
+        padding: 8px;
+        font-family: monospace;
+        font-size: 11px;
+      }
+      pre {
+        background: #060a13;
+        border: 1px solid #1e293b;
+        border-radius: 8px;
+        padding: 8px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-size: 11px;
+        color: #86efac;
+      }
+      h2 { margin: 0 0 6px; font-size: 15px; }
+      .muted { color: #94a3b8; font-size: 11px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="badge">CLOUD EGRESS: 0 BYTES</div>
+      <h2 style="margin-top:8px;">PhantomGlass Page Shield</h2>
+      <div class="muted">Inspects the active browser tab locally for watering-hole forms, hidden iframes &amp; credential traps.</div>
+      <button id="scanTabBtn" class="btn">Scan Active Page DOM Locally</button>
+      <pre id="domReport">Click "Scan Active Page DOM Locally" to audit this tab.</pre>
+    </div>
+
+    <div class="card">
+      <h2>Air-Gap Clipboard Redactor</h2>
+      <div class="muted">Scrubs AWS keys, GitHub PATs, emails &amp; payment cards strictly in RAM before pasting.</div>
+      <textarea id="secretInput" rows="4" placeholder="Paste sensitive snippet here..."></textarea>
+      <button id="redactBtn" class="btn">Redact Locally (0 Cloud Bytes)</button>
+      <pre id="redactOut">Sanitized output will appear here...</pre>
+    </div>
+
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

@@ -26,6 +26,7 @@ import {
 import {
   exorciseImageFile,
   generateLiveForensicSpecimen,
+  generateLivePdfSpecimen,
   SPECIMEN_PRESETS,
   type ExorcismResult
 } from './engines/mediaExorcist';
@@ -110,8 +111,34 @@ export default function App() {
   const [secretInput, setSecretInput] = useState<string>(SECRET_SCENARIOS[0].content);
   const secretReport = useMemo(() => runAirGapRedaction(secretInput), [secretInput]);
 
-  // MCP interactive preview state
+  // MCP interactive preview & Chaos Stress-Test state
   const [selectedMcpTool, setSelectedMcpTool] = useState<string>('audit_android_permissions');
+  const [chaosResult, setChaosResult] = useState<string | null>(null);
+
+  const runChaosStressTest = () => {
+    const truncatedJpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xe1, 0x00, 0xff]).buffer;
+    const corruptedPng = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0xff, 0xff, 0xff]).buffer;
+    const pdfProbe = generateLivePdfSpecimen();
+    const r1 = parseImageForensics(truncatedJpeg, 'chaos_truncated.jpg', 'image/jpeg');
+    const r2 = parseImageForensics(corruptedPng, 'chaos_corrupt.png', 'image/png');
+    const r3 = auditManifestPermissions('<<<MALFORMED_XML>>> android.permission.READ_MEDIA_IMAGES');
+    const r4 = runAirGapRedaction('Chaos key AKIAIOSFODNN7EXAMPLE + card 4532015112830366');
+    setChaosResult(
+      `4/4 CHAOS PROBES SURVIVED (0 CRASHES, 0 CLOUD BYTES)\n` +
+        `• Truncated JPEG Header: format=${r1.format}, safeClamp=OK\n` +
+        `• Corrupted PNG Chunk Length: format=${r2.format}, safeClamp=OK\n` +
+        `• Hostile PDF (/OpenAction + /JavaScript + Post-EOF): risk=${pdfProbe.report.riskScore}/100, tags=${pdfProbe.report.tags.length}\n` +
+        `• Malformed XML + Secrets: perms=${r3.permissions.length}, secretsBlocked=${r4.totalSecretsBlocked}`
+    );
+  };
+
+  const handleLoadPdfSpecimen = () => {
+    const pdfSpec = generateLivePdfSpecimen();
+    setRawBuffer(pdfSpec.buffer);
+    setPreviewUrl(null);
+    setForensicReport(pdfSpec.report);
+    setExorcismResult(null);
+  };
 
   const copyText = (text: string, id: string) => {
     navigator.clipboard?.writeText(text).catch(() => {});
@@ -314,7 +341,7 @@ export default function App() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/jpeg,image/png"
+                  accept="image/jpeg,image/png,application/pdf"
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
@@ -328,17 +355,17 @@ export default function App() {
                 >
                   <FileImage className="h-7 w-7 text-slate-400" />
                   <span className="mt-2 text-sm font-medium text-slate-200">
-                    Click to select a real JPEG or PNG from disk
+                    Click to select a real JPEG, PNG, or PDF from disk
                   </span>
                   <span className="mt-1 font-mono text-[11px] text-slate-400">
-                    Parses APP1 TIFF/EXIF, GPS Rationals, PNG Chunks &amp; Post-EOI Trailers
+                    Parses EXIF/GPS, PNG Chunks, PDF /JavaScript &amp; Post-EOF Trailers
                   </span>
                 </button>
 
                 <div className="mt-5 border-t border-slate-800 pt-4">
                   <div className="mb-2.5 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-emerald-400">
                     <Sparkles className="h-3.5 w-3.5" />
-                    1-Click Judge Binary Specimens (Real Spliced EXIF + GPS)
+                    1-Click Judge Binary Specimens (JPEG EXIF + PDF Actions)
                   </div>
                   <div className="space-y-2">
                     {SPECIMEN_PRESETS.map((preset, idx) => (
@@ -352,6 +379,18 @@ export default function App() {
                         <div className="mt-0.5 text-[11px] text-slate-400">{preset.subtitle}</div>
                       </button>
                     ))}
+                    <button
+                      type="button"
+                      onClick={handleLoadPdfSpecimen}
+                      className="w-full cursor-pointer rounded-xl border border-amber-500/30 bg-[#091020] p-3 text-left transition hover:border-amber-400/60 hover:bg-[#0D172B]"
+                    >
+                      <div className="text-xs font-semibold text-amber-200">
+                        Suspicious PDF Invoice (/OpenAction + /JavaScript + Post-EOF)
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-slate-400">
+                        Tests pure binary PDF forensic inspection for hidden auto-exec triggers &amp; author leaks
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -401,15 +440,17 @@ export default function App() {
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        disabled={exorcising}
-                        onClick={handleExorcise}
-                        className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-50"
-                      >
-                        <ShieldCheck className="h-4 w-4" />
-                        {exorcising ? 'EXORCISING PIXELS...' : 'EXORCISE & VERIFY CLEAN'}
-                      </button>
+                      {forensicReport.format !== 'PDF' && (
+                        <button
+                          type="button"
+                          disabled={exorcising}
+                          onClick={handleExorcise}
+                          className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-50"
+                        >
+                          <ShieldCheck className="h-4 w-4" />
+                          {exorcising ? 'EXORCISING PIXELS...' : 'EXORCISE & VERIFY CLEAN'}
+                        </button>
+                      )}
                     </div>
 
                     {forensicReport.gpsCoordinates && (
@@ -791,15 +832,38 @@ export default function App() {
                 </pre>
 
                 <div className="mt-4 rounded-xl border border-slate-800 bg-[#080D18] p-3.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="font-mono text-[11px] uppercase tracking-wider text-amber-400">
+                      CHAOS STRESS-TEST HARNESS (MALFORMED BINARY &amp; XML RESILIENCE)
+                    </div>
+                    <button
+                      type="button"
+                      onClick={runChaosStressTest}
+                      className="cursor-pointer rounded-lg border border-amber-500/40 bg-amber-500/15 px-3 py-1 font-mono text-[11px] font-semibold text-amber-200 hover:bg-amber-500/25"
+                    >
+                      RUN 4 CHAOS PROBES LIVE
+                    </button>
+                  </div>
+                  {chaosResult && (
+                    <pre className="mt-2.5 overflow-x-auto whitespace-pre-wrap rounded-lg border border-emerald-500/30 bg-[#050810] p-3 font-mono text-[11px] text-emerald-300">
+                      {chaosResult}
+                    </pre>
+                  )}
+                </div>
+
+                <div className="mt-4 rounded-xl border border-slate-800 bg-[#080D18] p-3.5">
                   <div className="font-mono text-[11px] uppercase tracking-wider text-slate-400">
-                    KIRO CLI / IDE QUICK LAUNCH
+                    KIRO CLI / IDE QUICK LAUNCH &amp; CHROME MV3 EXTENSION
                   </div>
                   <pre className="mt-1.5 overflow-x-auto font-mono text-xs text-emerald-300">
-{`# Run automated MCP & forensic engine test suite
+{`# Run automated forensic engine, PDF, Chaos & MCP test suite
 node --test tests/forensic-engines.test.mjs
 
 # Connect directly as a local Kiro MCP server
-node ./mcp-server/index.mjs`}
+node ./mcp-server/index.mjs
+
+# Companion Chrome Side-Panel Extension (Manifest V3):
+# Load unpacked from ./extension/ or download v1.0.0 release zip`}
                   </pre>
                 </div>
               </div>

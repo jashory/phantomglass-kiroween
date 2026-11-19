@@ -129,3 +129,21 @@ test('Zero outbound fetch/network telemetry inside core local forensic engines',
     assert.ok(!/XMLHttpRequest/.test(content), `Forbidden XMLHttpRequest detected in ${file}`);
   }
 });
+
+test('Companion Chrome Manifest V3 Side-Panel Extension files are valid and zero-cloud', () => {
+  const manifestPath = path.join(ROOT, 'extension/manifest.json');
+  assert.ok(fs.existsSync(manifestPath), 'extension/manifest.json missing');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assert.equal(manifest.manifest_version, 3);
+  assert.ok(manifest.permissions.includes('sidePanel'));
+  assert.ok(fs.existsSync(path.join(ROOT, 'extension/sidepanel.html')));
+  const spJs = fs.readFileSync(path.join(ROOT, 'extension/sidepanel.js'), 'utf8');
+  assert.ok(!/\bfetch\s*\(/.test(spJs), 'Extension must have 0 outbound fetch calls');
+});
+
+test('Chaos resilience: truncated binary buffers never throw uncaught exceptions', () => {
+  const truncated = Buffer.from([0xff, 0xd8, 0xff, 0xe1, 0x00, 0xff]).toString('base64');
+  const res = inspectImageExifBytesBase64(truncated);
+  assert.equal(res.format, 'JPEG');
+  assert.equal(res.cloudBytesSent, 0);
+});

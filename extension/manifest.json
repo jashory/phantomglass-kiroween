@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "PhantomGlass — Zero-Trust Page & Clipboard Exorcist",
+  "version": "1.0.0",
+  "description": "Local zero-cloud Chrome Side-Panel companion for PhantomGlass (Kiroween 2026): detects watering-hole forms, hidden iframes, and redacts secrets before paste.",
+  "permissions": ["sidePanel", "activeTab", "scripting"],
+  "action": {
+    "default_title": "Open PhantomGlass Privacy Shield"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}

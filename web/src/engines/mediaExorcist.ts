@@ -200,3 +200,25 @@ export async function generateLiveForensicSpecimen(
 
   return { buffer: splicedBuf, previewUrl, report };
 }
+
+export function generateLivePdfSpecimen(): {
+  buffer: ArrayBuffer;
+  report: BinaryForensicReport;
+} {
+  const rawPdf = `%PDF-1.7
+1 0 obj
+<< /Type /Catalog /OpenAction 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Action /S /JavaScript /JS (app.alert('Synthetic_Forensic_Probe')) /URI (https://verify-payroll-login.invalid/collect) >>
+endobj
+3 0 obj
+<< /Author (Finance Dept Workstation #14) /Creator (Adobe Acrobat Pro 2026) /Producer (macOS Quartz PDFContext) /CreationDate (D:20261119101500+06'00') >>
+endobj
+%%EOF
+PHANTOM_HIDDEN_POST_EOF_TRAILER_PAYLOAD_2026`;
+  const encoded = new TextEncoder().encode(rawPdf);
+  const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
+  const report = parseImageForensics(buffer, 'SUSPICIOUS_INVOICE_TRAP.pdf', 'application/pdf');
+  return { buffer, report };
+}

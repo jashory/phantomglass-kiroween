@@ -5,7 +5,7 @@
 
 export interface ExifTagEntry {
   id: string;
-  group: 'IFD0' | 'ExifIFD' | 'GPS' | 'PNG_CHUNK' | 'TRAILER';
+  group: 'IFD0' | 'ExifIFD' | 'GPS' | 'PNG_CHUNK' | 'PDF_META' | 'PDF_ACTION' | 'TRAILER';
   name: string;
   value: string;
   severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
@@ -15,7 +15,7 @@ export interface BinaryForensicReport {
   fileName: string;
   mimeType: string;
   byteLength: number;
-  format: 'JPEG' | 'PNG' | 'UNKNOWN';
+  format: 'JPEG' | 'PNG' | 'PDF' | 'UNKNOWN';
   tags: ExifTagEntry[];
   gpsCoordinates: { lat: number; lon: number } | null;
   trailingBytes: number;
@@ -318,6 +318,66 @@ export function parseImageForensics(
           });
         }
         break;
+      }
+    }
+  } else if (
+    bytes.length >= 5 &&
+    bytes[0] === 0x25 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x44 &&
+    bytes[3] === 0x46 &&
+    bytes[4] === 0x2d
+  ) {
+    format = 'PDF';
+    const rawLatin = new TextDecoder('latin1').decode(bytes.slice(0, Math.min(bytes.length, 512_000)));
+    const pdfActions: Array<{ key: string; regex: RegExp; label: string; severity: ExifTagEntry['severity'] }> = [
+      { key: 'JS', regex: /\/(?:JavaScript|JS)\b/g, label: 'Embedded PDF JavaScript Trigger', severity: 'CRITICAL' },
+      { key: 'OPENACTION', regex: /\/(?:OpenAction|AA)\b/g, label: 'Auto-Execute OpenAction / Additional Action', severity: 'CRITICAL' },
+      { key: 'LAUNCH', regex: /\/Launch\b/g, label: 'External System Command /Launch Action', severity: 'CRITICAL' },
+      { key: 'URI', regex: /\/URI\s*\(([^)]{1,120})\)/g, label: 'Embedded Outbound Phishing/Tracking URI', severity: 'HIGH' }
+    ];
+    for (const act of pdfActions) {
+      const matches = [...rawLatin.matchAll(act.regex)];
+      if (matches.length > 0) {
+        const detail = act.key === 'URI' ? matches.map((m) => m[1]).slice(0, 3).join(', ') : `${matches.length} occurrence(s) in PDF object stream`;
+        tags.push({
+          id: `PDF-${act.key}`,
+          group: 'PDF_ACTION',
+          name: act.label,
+          value: detail,
+          severity: act.severity
+        });
+      }
+    }
+    const metaFields: Array<{ field: string; label: string; severity: ExifTagEntry['severity'] }> = [
+      { field: 'Author', label: 'PDF Author Identity', severity: 'HIGH' },
+      { field: 'Creator', label: 'Originating Software / OS', severity: 'MEDIUM' },
+      { field: 'Producer', label: 'PDF Producer Pipeline', severity: 'MEDIUM' },
+      { field: 'CreationDate', label: 'Document Creation Timestamp', severity: 'HIGH' }
+    ];
+    for (const mf of metaFields) {
+      const m = rawLatin.match(new RegExp(`\\/${mf.field}\\s*\\(([^)]{1,140})\\)`));
+      if (m && m[1].trim()) {
+        tags.push({
+          id: `PDF-META-${mf.field}`,
+          group: 'PDF_META',
+          name: mf.label,
+          value: m[1].trim(),
+          severity: mf.severity
+        });
+      }
+    }
+    const eofIdx = rawLatin.lastIndexOf('%%EOF');
+    if (eofIdx > 0 && eofIdx + 6 < bytes.length) {
+      trailingBytes = Math.max(0, bytes.length - (eofIdx + 6));
+      if (trailingBytes > 4) {
+        tags.push({
+          id: 'TRAILER-PDF',
+          group: 'TRAILER',
+          name: 'Hidden Post-%%EOF Appended Bytes',
+          value: `${trailingBytes} trailing bytes after %%EOF`,
+          severity: 'CRITICAL'
+        });
       }
     }
   }
