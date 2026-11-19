@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "spec-and-mcp-sync-guard",
+      "description": "Reminds Kiro to keep .kiro/specs tasks and standalone MCP server tool definitions synchronized whenever engines or specs change.",
+      "trigger": "PostFileSave",
+      "matcher": "(mcp-server/index\\.mjs|\\.kiro/specs/.*\\.md)$",
+      "action": {
+        "type": "command",
+        "command": "node --test tests/forensic-engines.test.mjs"
+      }
+    }
+  ]
+}

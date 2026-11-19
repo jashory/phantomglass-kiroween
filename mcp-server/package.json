@@ -1,0 +1,13 @@
+{
+  "name": "phantomglass-mcp-server",
+  "version": "1.0.0",
+  "description": "Zero-cloud local Model Context Protocol (MCP) server for PhantomGlass forensic engines (Kiroween 2026)",
+  "type": "module",
+  "main": "index.mjs",
+  "bin": {
+    "phantomglass-mcp": "./index.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

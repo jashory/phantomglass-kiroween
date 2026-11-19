@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "zero-leak-network-guard",
+      "description": "Blocks accidental introduction of outbound fetch/analytics calls inside core local forensic engines on save.",
+      "trigger": "PostFileSave",
+      "matcher": "web/src/engines/.*\\.ts$",
+      "action": {
+        "type": "agent",
+        "prompt": "Audit the saved forensic engine file against .kiro/steering/product-and-privacy-constitution.md: verify zero outbound fetch/XMLHttpRequest/WebSocket calls exist, verify all DataView reads are bounds-checked, and verify deterministic risk scoring."
+      }
+    }
+  ]
+}

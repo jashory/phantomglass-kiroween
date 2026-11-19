@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "phantomglass-forensics": {
+      "command": "node",
+      "args": ["./mcp-server/index.mjs"],
+      "env": {
+        "PHANTOMGLASS_MODE": "zero-cloud-local"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "audit_android_permissions",
+        "scan_text_secrets",
+        "inspect_image_exif_bytes",
+        "generate_privacy_hardening_policy"
+      ]
+    }
+  }
+}
