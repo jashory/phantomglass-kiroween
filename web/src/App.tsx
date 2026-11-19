@@ -51,7 +51,7 @@ const KIRO_ARTIFACTS = [
   {
     path: '.kiro/specs/phantomglass-core/design.md',
     kind: 'Architecture Spec',
-    summary: 'Frankenstein 4-Organ Chimera Mermaid topology, media re-parse self-verification sequence, and strict DataView safety guarantees.'
+    summary: 'Frankenstein 6-Organ Chimera Mermaid topology, media re-parse self-verification sequence, PDF & MV3 specs, and DataView safety guarantees.'
   },
   {
     path: '.kiro/specs/binary-exorcist-engine/design.md',
@@ -219,10 +219,10 @@ export default function App() {
   }, [selectedMcpTool, permissionReport, secretReport, forensicReport]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden grid-lab-bg text-slate-100">
+    <div className="flex min-h-screen flex-col overflow-x-hidden grid-lab-bg text-slate-100">
       {/* Top Telemetry Bar */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/90 bg-[#070B14]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-[#070B14]/92 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1480px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">
               <Shield className="h-5 w-5" />
@@ -255,7 +255,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
         {/* Hero Context Banner */}
         <section className="glass-panel mb-6 rounded-2xl p-5 sm:p-6">
           <div className="grid gap-5 lg:grid-cols-12 lg:items-center">
@@ -326,9 +326,9 @@ export default function App() {
 
         {/* TAB 1: BINARY EXIF & PHOTO EXORCIST */}
         {activeTab === 'exorcist' && (
-          <section className="grid gap-6 lg:grid-cols-12">
+          <section className="grid items-start gap-6 lg:grid-cols-12">
             {/* Left: Upload & 1-Click Judge Specimens */}
-            <div className="space-y-4 lg:col-span-5">
+            <div className="space-y-4 lg:sticky lg:top-20 lg:col-span-5">
               <div className="glass-panel rounded-2xl p-5">
                 <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
                   <Upload className="h-4 w-4 text-emerald-400" />
@@ -539,8 +539,8 @@ export default function App() {
 
         {/* TAB 2: ANDROID PERMISSION BLAST-RADIUS 3D LAB */}
         {activeTab === 'permissions' && (
-          <section className="grid gap-6 lg:grid-cols-12">
-            <div className="space-y-4 lg:col-span-5">
+          <section className="grid items-start gap-6 lg:grid-cols-12">
+            <div className="space-y-4 lg:sticky lg:top-20 lg:col-span-5">
               <div className="glass-panel rounded-2xl p-5">
                 <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
                   <Activity className="h-4 w-4 text-emerald-400" />
@@ -683,9 +683,9 @@ export default function App() {
 
         {/* TAB 3: ZERO-LEAK SECRET AIR-GAP REDACTOR */}
         {activeTab === 'airgap' && (
-          <section className="grid gap-6 lg:grid-cols-12">
-            <div className="space-y-4 lg:col-span-6">
-              <div className="glass-panel rounded-2xl p-5">
+          <section className="grid items-stretch gap-6 lg:grid-cols-12">
+            <div className="flex lg:col-span-6">
+              <div className="glass-panel flex w-full flex-col rounded-2xl p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
                     <Lock className="h-4 w-4 text-emerald-400" />
@@ -709,13 +709,13 @@ export default function App() {
                   value={secretInput}
                   onChange={(e) => setSecretInput(e.target.value)}
                   rows={12}
-                  className="mt-3 w-full rounded-xl border border-slate-800 bg-[#060A13] p-3.5 font-mono text-xs text-slate-200 focus:border-emerald-500 focus:outline-none"
+                  className="mt-3 min-h-[280px] w-full flex-1 rounded-xl border border-slate-800 bg-[#060A13] p-3.5 font-mono text-xs text-slate-200 focus:border-emerald-500 focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="space-y-4 lg:col-span-6">
-              <div className="glass-panel rounded-2xl p-5">
+            <div className="flex lg:col-span-6">
+              <div className="glass-panel flex w-full flex-col rounded-2xl p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="font-display text-base font-semibold text-white">
                     Air-Gapped Safe Output ({secretReport.totalSecretsBlocked} Secrets Blocked)
@@ -762,9 +762,9 @@ export default function App() {
 
         {/* TAB 4: KIRO SPEC-DRIVEN ARCHITECTURE & LIVE MCP INSPECTOR */}
         {activeTab === 'kiro' && (
-          <section className="grid gap-6 lg:grid-cols-12">
-            <div className="space-y-4 lg:col-span-6">
-              <div className="glass-panel rounded-2xl p-5">
+          <section className="grid items-stretch gap-6 lg:grid-cols-12">
+            <div className="flex lg:col-span-6">
+              <div className="glass-panel flex w-full flex-col rounded-2xl p-5">
                 <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
                   <FileCode2 className="h-4 w-4 text-emerald-400" />
                   Tracked .kiro/ Spec-Driven Development Architecture
@@ -774,7 +774,7 @@ export default function App() {
                   directly in the repository root under .kiro/ for full judge verification.
                 </p>
 
-                <div className="mt-4 space-y-2.5">
+                <div className="mt-4 flex flex-1 flex-col justify-between gap-2.5">
                   {KIRO_ARTIFACTS.map((item) => (
                     <div
                       key={item.path}
@@ -795,8 +795,8 @@ export default function App() {
               </div>
             </div>
 
-            <div className="space-y-4 lg:col-span-6">
-              <div className="glass-panel rounded-2xl p-5">
+            <div className="flex lg:col-span-6">
+              <div className="glass-panel flex w-full flex-col justify-between rounded-2xl p-5">
                 <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
                   <Terminal className="h-4 w-4 text-emerald-400" />
                   Live Standalone MCP Server Inspector (./mcp-server/index.mjs)
@@ -872,8 +872,8 @@ node ./mcp-server/index.mjs
         )}
       </main>
 
-      <footer className="mt-10 border-t border-slate-800/80 py-6 text-center text-xs text-slate-400">
-        <div className="mx-auto max-w-7xl px-4">
+      <footer className="mt-auto border-t border-slate-800/50 bg-[#070B14]/75 py-5 text-center text-xs text-slate-400">
+        <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
           PhantomGlass // Built by HM Shihabuddin Jashory (@jashory) for Kiroween 2026 (Frankenstein Track) — 100% Zero-Cloud Defensive Security Architecture
         </div>
       </footer>
