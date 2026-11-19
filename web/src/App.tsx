@@ -249,7 +249,7 @@ export default function App() {
             </div>
             <div className="hidden items-center gap-1.5 rounded-md border border-slate-700/80 bg-slate-900/90 px-2.5 py-1.5 text-slate-300 sm:flex">
               <Cpu className="h-3.5 w-3.5 text-sky-400" />
-              <span>4-ORGAN LOCAL CHIMERA</span>
+              <span>6-ORGAN LOCAL CHIMERA</span>
             </div>
           </div>
         </div>
@@ -269,9 +269,9 @@ export default function App() {
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
                 Ordinary smartphone apps no longer need root exploits to harvest private photos, GPS coordinates,
-                and credentials—a single blanket Gallery or Mic permission is enough. PhantomGlass stitches four
-                independent forensic engines into one offline laboratory: raw binary EXIF/GPS parsing, cryptographic
-                Canvas pixel exorcism, 3D AndroidManifest blast-radius auditing, and a local MCP security server.
+                and credentials—a single blanket Gallery or Mic permission is enough. PhantomGlass stitches six
+                independent forensic organs into one offline laboratory: raw EXIF/GPS &amp; PDF binary parsing,
+                cryptographic pixel exorcism, 3D AndroidManifest auditing, a Chrome MV3 extension, and a local MCP server.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 lg:col-span-4">
@@ -285,9 +285,9 @@ export default function App() {
               <div className="rounded-xl border border-slate-800 bg-[#080D18] p-3.5">
                 <div className="font-mono text-[11px] text-slate-400">FORENSIC ORGANS</div>
                 <div className="mt-1 font-display text-2xl font-bold tabular-nums text-white">
-                  4 + MCP
+                  6 + MCP
                 </div>
-                <div className="mt-0.5 text-[11px] text-slate-400">Web + Node.js stdio</div>
+                <div className="mt-0.5 text-[11px] text-slate-400">Web + Ext + Node stdio</div>
               </div>
             </div>
           </div>
@@ -425,6 +425,36 @@ export default function App() {
                 </div>
               ) : (
                 <>
+                  {/* Independent Verification Proof after Exorcism — Prominent Top Spotlight */}
+                  {exorcismResult && (
+                    <div className="rounded-2xl border border-emerald-500/50 bg-emerald-500/15 p-5 shadow-lg">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+                          <div>
+                            <h4 className="font-display text-base font-bold text-emerald-200">
+                              Exorcism Complete — Independently Re-Parsed &amp; Verified Clean
+                            </h4>
+                            <p className="font-mono text-xs text-emerald-300/90">
+                              TAGS PURGED: {exorcismResult.tagsEliminated} // BYTES REMOVED:{' '}
+                              {exorcismResult.bytesPurged.toLocaleString()} B // REMAINING METADATA:{' '}
+                              {exorcismResult.afterReport.tags.length} TAGS, {exorcismResult.afterReport.trailingBytes} B TRAILER
+                            </p>
+                          </div>
+                        </div>
+
+                        <a
+                          href={exorcismResult.cleanUrl}
+                          download={exorcismResult.cleanFileName}
+                          className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-emerald-400/50 bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 transition hover:bg-emerald-400"
+                        >
+                          <Download className="h-4 w-4" />
+                          Download Clean Image
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="glass-panel rounded-2xl p-5">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
@@ -501,36 +531,6 @@ export default function App() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Independent Verification Proof after Exorcism */}
-                  {exorcismResult && (
-                    <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-5">
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-2.5">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                          <div>
-                            <h4 className="font-display text-base font-bold text-emerald-200">
-                              Exorcism Complete — Independently Re-Parsed &amp; Verified Clean
-                            </h4>
-                            <p className="font-mono text-xs text-emerald-300/90">
-                              TAGS PURGED: {exorcismResult.tagsEliminated} // BYTES REMOVED:{' '}
-                              {exorcismResult.bytesPurged.toLocaleString()} B // REMAINING METADATA:{' '}
-                              {exorcismResult.afterReport.tags.length} TAGS, {exorcismResult.afterReport.trailingBytes} B TRAILER
-                            </p>
-                          </div>
-                        </div>
-
-                        <a
-                          href={exorcismResult.cleanUrl}
-                          download={exorcismResult.cleanFileName}
-                          className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-emerald-400/50 bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 transition hover:bg-emerald-400"
-                        >
-                          <Download className="h-4 w-4" />
-                          Download Clean Image
-                        </a>
-                      </div>
-                    </div>
-                  )}
                 </>
               )}
             </div>
