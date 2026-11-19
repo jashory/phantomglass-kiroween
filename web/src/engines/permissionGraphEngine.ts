@@ -198,6 +198,37 @@ export const MANIFEST_PRESETS: ManifestPreset[] = [
   }
 ];
 
+const ANDROID_RUNTIME_REVOCABLE = new Set([
+  'READ_MEDIA_IMAGES',
+  'READ_MEDIA_VIDEO',
+  'READ_MEDIA_AUDIO',
+  'ACCESS_MEDIA_LOCATION',
+  'READ_EXTERNAL_STORAGE',
+  'WRITE_EXTERNAL_STORAGE',
+  'RECORD_AUDIO',
+  'ACCESS_FINE_LOCATION',
+  'ACCESS_COARSE_LOCATION',
+  'ACCESS_BACKGROUND_LOCATION',
+  'CAMERA',
+  'READ_CONTACTS',
+  'READ_SMS',
+  'RECEIVE_SMS',
+  'READ_CALL_LOG',
+  'READ_PHONE_STATE'
+]);
+
+function buildVerifiedAdbCommands(packageName: string, permissions: string[]): string[] {
+  const cmds: string[] = [];
+  for (const p of permissions) {
+    if (ANDROID_RUNTIME_REVOCABLE.has(p)) {
+      cmds.push(`adb shell pm revoke ${packageName} android.permission.${p}`);
+    } else if (p === 'SYSTEM_ALERT_WINDOW') {
+      cmds.push(`adb shell appops set ${packageName} SYSTEM_ALERT_WINDOW deny`);
+    }
+  }
+  return cmds;
+}
+
 export function auditManifestPermissions(manifestText: string): PermissionAuditReport {
   const pkgMatch = manifestText.match(/package\s*=\s*["']([^"']+)["']/);
   const packageName = pkgMatch ? pkgMatch[1] : 'com.audited.application';
@@ -235,9 +266,6 @@ export function auditManifestPermissions(manifestText: string): PermissionAuditR
     );
     const matchedAmp = rule.amplifiers.filter((a) => permSet.has(a));
     const matchedPermissions = [...new Set([...matchedReq, ...matchedAmp])];
-    const revocable = matchedPermissions.filter(
-      (p) => !['INTERNET', 'RECEIVE_BOOT_COMPLETED', 'WAKE_LOCK', 'ACCESS_NETWORK_STATE'].includes(p)
-    );
 
     chains.push({
       id: rule.id,
@@ -246,9 +274,7 @@ export function auditManifestPermissions(manifestText: string): PermissionAuditR
       matchedPermissions,
       mechanism: rule.mechanism,
       realWorldPrecedent: rule.realWorldPrecedent,
-      adbRevokeCommands: revocable.map(
-        (p) => `adb shell pm revoke ${packageName} android.permission.${p}`
-      )
+      adbRevokeCommands: buildVerifiedAdbCommands(packageName, matchedPermissions)
     });
   }
 

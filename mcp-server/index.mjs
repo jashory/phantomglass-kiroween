@@ -58,6 +58,37 @@ function extractPermissions(manifestXml) {
     .filter((s) => /^[A-Z][A-Z0-9_]{3,}$/.test(s));
 }
 
+const ANDROID_RUNTIME_REVOCABLE = new Set([
+  'READ_MEDIA_IMAGES',
+  'READ_MEDIA_VIDEO',
+  'READ_MEDIA_AUDIO',
+  'ACCESS_MEDIA_LOCATION',
+  'READ_EXTERNAL_STORAGE',
+  'WRITE_EXTERNAL_STORAGE',
+  'RECORD_AUDIO',
+  'ACCESS_FINE_LOCATION',
+  'ACCESS_COARSE_LOCATION',
+  'ACCESS_BACKGROUND_LOCATION',
+  'CAMERA',
+  'READ_CONTACTS',
+  'READ_SMS',
+  'RECEIVE_SMS',
+  'READ_CALL_LOG',
+  'READ_PHONE_STATE'
+]);
+
+function buildVerifiedAdbCommands(packageName, perms) {
+  const cmds = [];
+  for (const p of perms) {
+    if (ANDROID_RUNTIME_REVOCABLE.has(p)) {
+      cmds.push(`adb shell pm revoke ${packageName} android.permission.${p}`);
+    } else if (p === 'SYSTEM_ALERT_WINDOW') {
+      cmds.push(`adb shell appops set ${packageName} SYSTEM_ALERT_WINDOW deny`);
+    }
+  }
+  return cmds;
+}
+
 export function auditAndroidPermissions(manifestText, packageName = 'com.example.target') {
   const perms = extractPermissions(manifestText);
   const permSet = new Set(perms);
@@ -80,9 +111,7 @@ export function auditAndroidPermissions(manifestText, packageName = 'com.example
         matchedPermissions: matchedPerms,
         mechanism: chain.mechanism,
         realWorldPrecedent: chain.precedent || 'Observed across commercial mobile telemetry audits.',
-        adbRevokeCommands: matchedPerms
-          .filter((p) => p !== 'INTERNET' && p !== 'RECEIVE_BOOT_COMPLETED' && p !== 'WAKE_LOCK')
-          .map((p) => `adb shell pm revoke ${packageName} android.permission.${p}`)
+        adbRevokeCommands: buildVerifiedAdbCommands(packageName, matchedPerms)
       });
     }
   }
