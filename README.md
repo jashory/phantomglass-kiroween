@@ -29,10 +29,10 @@ Modern mobile apps and cloud AI workflows rarely need root access or zero-day ex
 - **Real Cloud KVM Android 14 (API 34) Emulator APK Verification:** Built and installed a real signed target APK (`com.phantomglass.testtarget`) on a hardware-accelerated Android 14 emulator (`emulator-5554`), granted runtime permissions, and executed all 5 PhantomGlass-generated `adb shell pm revoke` and `adb shell appops set` commands with `5/5 EXIT CODE 0` and verified `granted=false` in `dumpsys package`.
 - **Automated Cloud CI Test Suite (`tests/forensic-engines.test.mjs`):** Verifies Android 8–17 API version filtering, Apple iOS `Info.plist` & `PrivacyInfo.xcprivacy` detection, Organ #7 columnar CSV shrinking (>75%+ compression + SHA-256 Chain of Custody), 7-tool stdio MCP JSON-RPC 2.0 round-trips, zero `fetch`/`XMLHttpRequest` leaks across all engines, and 6/6 Chaos Stress-Test resilience.
 
-## Live Screenshots
-| 60fps 3D Mobile Permission Topology | Binary EXIF/GPS & PDF Forensic Microscope | Mobile Responsive Workbench |
+## Live Screenshots (`3:2` High-Resolution Workbench v2.0)
+| Organ #7 Columnar CSV Shrinker (`94.89%` Shrink, `314 ms`) | Apple iOS `Info.plist` & `PrivacyInfo.xcprivacy` 3D Audit | Universal Android 17 (API 37) 3D Audit & `.kiro/` 7-Tool MCP |
 | :---: | :---: | :---: |
-| ![3D Permission Topology](screenshots/01_3d_permission_topology.jpg) | ![Binary Exorcist](screenshots/02_binary_exif_exorcist.jpg) | ![Mobile Responsive](screenshots/03_mobile_responsive_audit.jpg) |
+| ![Organ 7 Columnar Shrinker](screenshots/01_organ7_columnar_shrinker_97pct.jpg) | ![Apple iOS 3D Audit](screenshots/02_ios_info_plist_3d_audit.jpg) | ![Kiro 7-Tool MCP](screenshots/04_kiro_7tool_mcp_and_chaos.jpg) |
 
 ---
 
