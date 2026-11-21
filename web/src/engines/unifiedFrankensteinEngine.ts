@@ -18,9 +18,10 @@ import {
 } from './iosPrivacyEngine';
 import {
   runAirGapRedaction,
-  SECRET_SCENARIOS,
-  type AirGapReport
+  SECRET_SCENARIOS
 } from './secretAirGapEngine';
+
+type AirGapReport = ReturnType<typeof runAirGapRedaction>;
 import {
   exorciseTabularDataset,
   generateEnterpriseDatasetSpecimen,
@@ -371,7 +372,9 @@ export async function runUnifiedUserFiles(files: File[]): Promise<UnifiedPipelin
             : lower.endsWith('.pdf')
               ? 'application/pdf'
               : 'text/plain';
-        rawItems.push({ name: entry.name, buffer: entry.data.buffer.slice(entry.data.byteOffset, entry.data.byteOffset + entry.data.byteLength), mime });
+        const copyBytes = new Uint8Array(entry.data.byteLength);
+        copyBytes.set(entry.data);
+        rawItems.push({ name: entry.name, buffer: copyBytes.buffer, mime });
       }
     } else {
       rawItems.push({ name: file.name, buffer: buf, mime: file.type || 'application/octet-stream' });
