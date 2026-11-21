@@ -137,7 +137,7 @@ async function runChromeExtensionLiveTest() {
 
   let scrubbedText = '';
   if (bannerVisible) {
-    await page.locator('#phantomglass-airgap-redact-btn').click();
+    await page.locator('#phantomglass-redact-btn').click();
     await sleep(600);
     scrubbedText = await page.inputValue('#ai-prompt');
   }
