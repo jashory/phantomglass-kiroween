@@ -2,22 +2,22 @@
 
 @layer base {
   :root {
-    --font-display: 'Space Grotesk', system-ui, sans-serif;
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #070B14;
-    color: #F1F5F9;
-    background-image:
-      radial-gradient(circle at 15% 0%, rgba(30, 58, 95, 0.28), transparent 45%),
-      radial-gradient(circle at 85% 10%, rgba(16, 185, 129, 0.08), transparent 40%);
+    background-color: #090b0f;
+    color: #f3f5f8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
+    letter-spacing: -0.025em;
   }
 
   code, pre, .font-mono {
@@ -29,15 +29,24 @@
   font-variant-numeric: tabular-nums;
 }
 
-.glass-panel {
-  background: rgba(14, 21, 37, 0.84);
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  backdrop-filter: blur(12px);
+.surface-card {
+  background-color: #10141c;
+  border: 1px solid #1e2532;
 }
 
-.grid-lab-bg {
-  background-size: 32px 32px;
-  background-image:
-    linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+.surface-inset {
+  background-color: #0c0f15;
+  border: 1px solid #19202c;
+}
+
+.glass-panel {
+  background-color: #10141c;
+  border: 1px solid #1e2532;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

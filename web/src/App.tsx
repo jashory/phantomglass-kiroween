@@ -12,7 +12,6 @@ import {
   FolderGit2,
   Layers,
   Lock,
-  Radio,
   Shield,
   ShieldAlert,
   ShieldCheck,
@@ -55,11 +54,19 @@ import {
   type DatasetProfileReport
 } from './engines/columnarScrubberEngine';
 import { ThreatTopology3D } from './components/ThreatTopology3D';
+import { UnifiedPipelineView } from './components/UnifiedPipelineView';
+import { KiroHookLivePanel } from './components/KiroHookLivePanel';
+import type { UnifiedPipelineReport } from './engines/unifiedFrankensteinEngine';
 
-type ActiveTab = 'exorcist' | 'permissions' | 'airgap' | 'dataset' | 'kiro';
+type ActiveTab = 'unified' | 'exorcist' | 'permissions' | 'airgap' | 'dataset' | 'kiro';
 type MobilePlatform = 'android' | 'ios';
 
 const KIRO_ARTIFACTS = [
+  {
+    path: '.kiro/specs/unified-frankenstein-pipeline/design.md',
+    kind: 'v3.0 Synergy Spec',
+    summary: 'Stitches all 7 organs into a 1-click Haunted Incident Bundle & client-side .zip pipeline with cross-organ kill-chain correlation.'
+  },
   {
     path: '.kiro/specs/phantomglass-core/requirements.md',
     kind: 'EARS Spec',
@@ -120,7 +127,7 @@ function formatBytes(bytes: number): string {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('exorcist');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('unified');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Organ 1, 2 & 5: Binary EXIF & PDF Exorcist state
@@ -355,92 +362,101 @@ export default function App() {
     );
   }, [selectedMcpTool, permissionReport, iosReport, datasetResult, secretReport, forensicReport]);
 
+  const syncBundleToOrgans = (bundle: UnifiedPipelineReport) => {
+    if (bundle.photoRaw) {
+      setRawBuffer(bundle.photoRaw.buffer);
+      setPreviewUrl(bundle.photoRaw.previewUrl);
+      setForensicReport(bundle.photoRaw.report);
+      setExorcismResult(null);
+    }
+    if (bundle.datasetSource) {
+      setDatasetSource(bundle.datasetSource.text);
+      applyProfileDefaults(bundle.datasetSource.profile);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden grid-lab-bg text-slate-100">
-      {/* Top Telemetry Bar */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-[#070B14]/92 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1480px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[#090B0F] text-slate-100">
+      {/* Top Bar — Clean Studio Header */}
+      <header className="sticky top-0 z-30 border-b border-[#1A202C] bg-[#090B0F]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-3.5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">
-              <Shield className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#252E3E] bg-[#11151E] text-white">
+              <Layers className="h-4 w-4" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-display text-lg font-bold tracking-tight text-white">
+              <div className="flex items-center gap-2.5">
+                <h1 className="font-display text-base font-semibold tracking-tight text-white">
                   PhantomGlass
                 </h1>
-                <span className="rounded border border-slate-700 bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-300">
-                  Kiroween 2026 // Frankenstein v2.0
+                <span className="rounded-md border border-[#242C3B] bg-[#11151E] px-2 py-0.5 font-mono text-[11px] text-slate-400">
+                  v3.0 · Kiroween 2026
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Zero-Trust Mobile (Android 8–17 &amp; iOS), Binary Media, Secret &amp; Columnar Dataset Exorcist
+                Zero-Cloud Forensic Exorcist for Media, Android/iOS, Secrets &amp; Enterprise CSVs
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-            <div className="flex items-center gap-1.5 rounded-md border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-1.5 text-emerald-300">
+            <div className="flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-emerald-300">
               <WifiOff className="h-3.5 w-3.5" />
-              <span>CLOUD EGRESS: 0 BYTES</span>
+              <span>0 B cloud egress</span>
             </div>
-            <div className="hidden items-center gap-1.5 rounded-md border border-slate-700/80 bg-slate-900/90 px-2.5 py-1.5 text-slate-300 sm:flex">
-              <Cpu className="h-3.5 w-3.5 text-sky-400" />
-              <span>7-ORGAN LOCAL CHIMERA</span>
+            <div className="hidden items-center gap-1.5 rounded-md border border-[#242C3B] bg-[#10141C] px-2.5 py-1.5 text-slate-300 sm:flex">
+              <Cpu className="h-3.5 w-3.5 text-slate-400" />
+              <span>7 chained organs + MCP</span>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        {/* Hero Context Banner */}
-        <section className="glass-panel mb-6 rounded-2xl p-5 sm:p-6">
+      <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        {/* Clean Restraint Hero */}
+        <section className="surface-card mb-6 rounded-2xl p-6">
           <div className="grid gap-5 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-8">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 font-mono text-[11px] text-red-300">
-                <Radio className="h-3.5 w-3.5" />
-                ZERO-CLOUD COUNTER-ARCHITECTURE FOR MOBILE PERMISSIONS, MEDIA, SECRETS &amp; GIGABYTE DATASETS
-              </div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                Stop Silent Camera-Roll, Permission, Secret &amp; Dataset Leaks Before a Single Byte Leaves Your Device
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-white sm:text-[28px] sm:leading-tight">
+                Stop silent camera-roll, mobile permission, secret, and dataset leaks before a single byte leaves your device.
               </h2>
-              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-                PhantomGlass stitches seven independent forensic organs into one air-gapped laboratory: raw JPEG/PNG/PDF
-                binary parsing, cryptographic Canvas pixel exorcism, universal Android 8–17 &amp; Apple iOS Info.plist 3D
-                auditing, Shannon-entropy PII redaction, Organ #7 zero-cloud columnar CSV shrinking with SHA-256 Chain of
-                Custody, a Chrome MV3 extension, and a 7-tool local Kiro MCP server.
+              <p className="mt-2.5 max-w-3xl text-sm leading-relaxed text-slate-400">
+                One air-gapped Frankenstein pipeline uniting raw EXIF/PDF binary parsing, universal Android 8–17 and
+                Apple iOS 3D auditing, Shannon-entropy secret air-gapping, columnar CSV shrinking with SHA-256 Chain of
+                Custody, a live Chrome MV3 extension, and a 7-tool local Kiro MCP server.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 lg:col-span-4">
-              <div className="rounded-xl border border-slate-800 bg-[#080D18] p-3.5">
-                <div className="font-mono text-[11px] text-slate-400">OUTBOUND DATA</div>
-                <div className="mt-1 font-display text-2xl font-bold tabular-nums text-emerald-400">
-                  0 B
+              <div className="surface-inset rounded-xl p-4">
+                <div className="text-xs text-slate-400">Outbound network</div>
+                <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-emerald-400">
+                  0 bytes
                 </div>
-                <div className="mt-0.5 text-[11px] text-slate-400">100% Air-Gapped RAM</div>
+                <div className="mt-0.5 text-xs text-slate-500">Verified in browser RAM</div>
               </div>
-              <div className="rounded-xl border border-slate-800 bg-[#080D18] p-3.5">
-                <div className="font-mono text-[11px] text-slate-400">FORENSIC ORGANS</div>
-                <div className="mt-1 font-display text-2xl font-bold tabular-nums text-white">
-                  7 + MCP
+              <div className="surface-inset rounded-xl p-4">
+                <div className="text-xs text-slate-400">Chained architecture</div>
+                <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-white">
+                  7 organs
                 </div>
-                <div className="mt-0.5 text-[11px] text-slate-400">Web + Ext + 7 stdio Tools</div>
+                <div className="mt-0.5 text-xs text-slate-500">Web · Ext v3 · 7 MCP tools</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Module Navigation */}
+        {/* Clean Uncluttered Navigation */}
         <nav
           aria-label="Forensic Workbench Modules"
-          className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-5"
+          className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6"
         >
           {[
-            { id: 'exorcist', label: '1. EXIF & PDF', icon: FileImage },
-            { id: 'permissions', label: '2. Android & iOS 3D', icon: ShieldAlert },
-            { id: 'airgap', label: '3. Secret Air-Gap', icon: Lock },
-            { id: 'dataset', label: '4. Dataset Shrinker', icon: Database },
-            { id: 'kiro', label: '5. Kiro & 7-Tool MCP', icon: FolderGit2 }
+            { id: 'unified', label: 'Unified Pipeline', icon: Layers },
+            { id: 'exorcist', label: 'EXIF & PDF', icon: FileImage },
+            { id: 'permissions', label: 'Android & iOS 3D', icon: ShieldAlert },
+            { id: 'airgap', label: 'Secret Air-Gap', icon: Lock },
+            { id: 'dataset', label: 'CSV Shrinker', icon: Database },
+            { id: 'kiro', label: 'Kiro Hooks & MCP', icon: FolderGit2 }
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -449,10 +465,10 @@ export default function App() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as ActiveTab)}
-                className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-semibold transition-all sm:text-sm ${
+                className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-medium transition sm:text-sm ${
                   active
-                    ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200 shadow-sm'
-                    : 'border-slate-800 bg-[#0D1424] text-slate-300 hover:border-slate-700 hover:text-white'
+                    ? 'border-white/25 bg-white text-[#090B0F] font-semibold'
+                    : 'border-[#1E2532] bg-[#10141C] text-slate-300 hover:border-slate-600 hover:text-white'
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -461,6 +477,14 @@ export default function App() {
             );
           })}
         </nav>
+
+        {/* TAB 0 (DEFAULT): UNIFIED FRANKENSTEIN 7-ORGAN PIPELINE */}
+        {activeTab === 'unified' && (
+          <UnifiedPipelineView
+            onJumpToTab={(t) => setActiveTab(t)}
+            onSyncBundleToOrgans={syncBundleToOrgans}
+          />
+        )}
 
         {/* TAB 1: BINARY EXIF & PHOTO / PDF EXORCIST */}
         {activeTab === 'exorcist' && (
@@ -1396,9 +1420,11 @@ export default function App() {
           </section>
         )}
 
-        {/* TAB 5: KIRO SPEC-DRIVEN ARCHITECTURE & 7-TOOL MCP INSPECTOR */}
+        {/* TAB 5: KIRO SPEC-DRIVEN ARCHITECTURE, LIVE HOOK INTERCEPTOR & 7-TOOL MCP */}
         {activeTab === 'kiro' && (
-          <section className="grid items-stretch gap-6 lg:grid-cols-12">
+          <section className="space-y-6">
+            <KiroHookLivePanel />
+            <div className="grid items-stretch gap-6 lg:grid-cols-12">
             <div className="flex lg:col-span-6">
               <div className="glass-panel flex w-full flex-col rounded-2xl p-5">
                 <h3 className="flex items-center gap-2 font-display text-base font-semibold text-white">
@@ -1506,13 +1532,14 @@ node ./mcp-server/index.mjs
                 </div>
               </div>
             </div>
+            </div>
           </section>
         )}
       </main>
 
-      <footer className="mt-auto border-t border-slate-800/50 bg-[#070B14]/75 py-5 text-center text-xs text-slate-400">
-        <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
-          PhantomGlass v2.0 // Built by HM Shihabuddin Jashory (@jashory) for Kiroween 2026 (Frankenstein Track) — 7-Organ Zero-Cloud Defensive Security Architecture
+      <footer className="mt-auto border-t border-[#1A202C] bg-[#090B0F] py-5 text-center text-xs text-slate-500">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
+          PhantomGlass v3.0 · Built by HM Shihabuddin Jashory (@jashory) for Kiroween 2026 (Frankenstein Track) — Unified 7-Organ Zero-Cloud Architecture
         </div>
       </footer>
     </div>

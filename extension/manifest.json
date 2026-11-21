@@ -1,16 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "PhantomGlass v2.0 — Zero-Trust Page, Mobile & CSV Exorcist",
-  "version": "2.0.0",
-  "description": "Local zero-cloud Chrome Side-Panel companion for PhantomGlass v2.0 (Kiroween 2026): detects watering-hole forms, hidden iframes, Android/iOS leaks, and scrubs text or CSV PII strictly in RAM.",
+  "name": "PhantomGlass v3.0 — Zero-Cloud Live Air-Gap & Forensic Shield",
+  "version": "3.0.0",
+  "description": "Zero-cloud Chrome MV3 companion for PhantomGlass v3.0 (Kiroween 2026): live webpage credential air-gap redaction plus Side-Panel page, Android/iOS, and CSV PII auditing strictly in RAM.",
   "permissions": ["sidePanel", "activeTab", "scripting"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "action": {
-    "default_title": "Open PhantomGlass v2.0 Privacy Shield"
+    "default_title": "Open PhantomGlass v3.0 Privacy Shield"
   },
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "side_panel": {
     "default_path": "sidepanel.html"
   }
