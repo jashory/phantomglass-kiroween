@@ -4,6 +4,7 @@
 > **Author:** HM Shihabuddin Jashory (`@jashory`) | **Architecture:** Unified 7-Organ Client-Side Forensic Pipeline + Live Kiro Hook Guard + Chrome MV3 Inline Air-Gap Extension + 7-Tool Standalone MCP Server
 
 **Live HTTPS Deployment:** [https://jashory.github.io/phantomglass-kiroween/](https://jashory.github.io/phantomglass-kiroween/)  
+**Official Demo Video (YouTube 1080p):** [https://youtu.be/KRKF2oIqYn8](https://youtu.be/KRKF2oIqYn8)  
 **Companion Chrome Manifest V3 Extension (`v3.0.0`):** [https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.0.0](https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.0.0)
 
 ---
