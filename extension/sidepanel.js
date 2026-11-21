@@ -37,6 +37,23 @@ function auditActiveDom() {
   };
 }
 
+function luhnCheck(num) {
+  const digits = String(num || '').replace(/\D/g, '');
+  if (digits.length < 13 || digits.length > 19) return false;
+  let sum = 0;
+  let alt = false;
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let n = parseInt(digits[i], 10);
+    if (alt) {
+      n *= 2;
+      if (n > 9) n -= 9;
+    }
+    sum += n;
+    alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+
 function redactLocalSecrets(text) {
   let out = String(text || '');
   let count = 0;
@@ -44,8 +61,8 @@ function redactLocalSecrets(text) {
     ['AWS_KEY', /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g],
     ['GITHUB_PAT', /\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b/g],
     ['JWT', /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g],
-    ['EMAIL', /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g],
-    ['CARD', /\b(?:\d[ -]*?){13,19}\b/g]
+    ['NID_SSN', /\b(?:NID|SSN|Passport)[\s:#-]*[A-Z0-9-]{7,17}\b/gi],
+    ['EMAIL', /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g]
   ];
   for (const [label, regex] of patterns) {
     out = out.replace(regex, () => {
@@ -53,7 +70,33 @@ function redactLocalSecrets(text) {
       return `[REDACTED_${label}_${count}]`;
     });
   }
+  out = out.replace(/\b(?:\d[ -]*?){13,19}\b/g, (match) => {
+    if (!luhnCheck(match)) return match;
+    count += 1;
+    return `[REDACTED_CARD_${count}]`;
+  });
   return { count, redacted: out };
+}
+
+function auditMobileManifestSnippet(text) {
+  const raw = String(text || '');
+  const androidPerms = [...new Set([...raw.matchAll(/android\.permission\.([A-Z0-9_]+)/g)].map((m) => m[1]))];
+  const iosKeys = [
+    'NSPhotoLibraryUsageDescription',
+    'NSMicrophoneUsageDescription',
+    'NSLocationAlwaysAndWhenInUseUsageDescription',
+    'NSUserTrackingUsageDescription',
+    'NSAllowsArbitraryLoads',
+    'NSPrivacyTracking'
+  ].filter((k) => raw.includes(k));
+  const risk = Math.min(100, androidPerms.length * 10 + iosKeys.length * 18);
+  return {
+    platformDetected: iosKeys.length > 0 ? 'iOS Info.plist / xcprivacy' : androidPerms.length > 0 ? 'Android 8-17 Manifest' : 'No mobile manifest keys detected',
+    androidPermissions: androidPerms,
+    iosPrivacyKeys: iosKeys,
+    blastRadiusScore: risk,
+    cloudBytesSent: 0
+  };
 }
 
 document.getElementById('scanTabBtn')?.addEventListener('click', async () => {
@@ -74,5 +117,11 @@ document.getElementById('scanTabBtn')?.addEventListener('click', async () => {
 document.getElementById('redactBtn')?.addEventListener('click', () => {
   const raw = document.getElementById('secretInput').value;
   const res = redactLocalSecrets(raw);
-  document.getElementById('redactOut').textContent = `Blocked ${res.count} secrets (0 cloud bytes):\n\n${res.redacted}`;
+  document.getElementById('redactOut').textContent = `Blocked ${res.count} secrets/PII (0 cloud bytes):\n\n${res.redacted}`;
+});
+
+document.getElementById('mobileBtn')?.addEventListener('click', () => {
+  const raw = document.getElementById('secretInput').value;
+  const res = auditMobileManifestSnippet(raw);
+  document.getElementById('redactOut').textContent = JSON.stringify(res, null, 2);
 });

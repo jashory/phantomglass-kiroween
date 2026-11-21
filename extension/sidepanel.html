@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>PhantomGlass Side-Panel Shield</title>
+    <title>PhantomGlass v2.0 Side-Panel Shield</title>
     <style>
       body {
         margin: 0;
@@ -41,6 +41,11 @@
         margin-top: 8px;
       }
       .btn:hover { background: #4ade80; }
+      .btn-sky {
+        background: #38bdf8;
+        color: #082f49;
+      }
+      .btn-sky:hover { background: #7dd3fc; }
       textarea {
         width: 100%;
         box-sizing: border-box;
@@ -61,26 +66,29 @@
         word-break: break-all;
         font-size: 11px;
         color: #86efac;
+        max-height: 180px;
+        overflow-y: auto;
       }
-      h2 { margin: 0 0 6px; font-size: 15px; }
+      h2 { margin: 0 0 6px; font-size: 14px; }
       .muted { color: #94a3b8; font-size: 11px; }
     </style>
   </head>
   <body>
     <div class="card">
-      <div class="badge">CLOUD EGRESS: 0 BYTES</div>
-      <h2 style="margin-top:8px;">PhantomGlass Page Shield</h2>
+      <div class="badge">PHANTOMGLASS v2.0 // CLOUD EGRESS: 0 BYTES</div>
+      <h2 style="margin-top:8px;">Active Tab DOM &amp; Tracker Shield</h2>
       <div class="muted">Inspects the active browser tab locally for watering-hole forms, hidden iframes &amp; credential traps.</div>
       <button id="scanTabBtn" class="btn">Scan Active Page DOM Locally</button>
       <pre id="domReport">Click "Scan Active Page DOM Locally" to audit this tab.</pre>
     </div>
 
     <div class="card">
-      <h2>Air-Gap Clipboard Redactor</h2>
-      <div class="muted">Scrubs AWS keys, GitHub PATs, emails &amp; payment cards strictly in RAM before pasting.</div>
-      <textarea id="secretInput" rows="4" placeholder="Paste sensitive snippet here..."></textarea>
-      <button id="redactBtn" class="btn">Redact Locally (0 Cloud Bytes)</button>
-      <pre id="redactOut">Sanitized output will appear here...</pre>
+      <h2>Air-Gap Clipboard &amp; CSV PII Exorcist</h2>
+      <div class="muted">Scrubs AWS keys, GitHub PATs, JWTs, NIDs, emails &amp; Luhn payment cards strictly in RAM before pasting.</div>
+      <textarea id="secretInput" rows="4" placeholder="Paste sensitive snippet, CSV rows, or Android/iOS XML here..."></textarea>
+      <button id="redactBtn" class="btn">Scrub Secrets &amp; PII (0 Cloud Bytes)</button>
+      <button id="mobileBtn" class="btn btn-sky">Audit Android 8-17 / iOS Plist Snippet</button>
+      <pre id="redactOut">Sanitized output or mobile risk report will appear here...</pre>
     </div>
 
     <script src="sidepanel.js"></script>
