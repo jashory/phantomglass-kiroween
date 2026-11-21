@@ -35,8 +35,10 @@ export function computeShannonEntropy(str: string): number {
 }
 
 export function validateLuhn(raw: string): boolean {
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw.trim())) return false;
   const digits = raw.replace(/\D/g, '');
   if (digits.length < 13 || digits.length > 19) return false;
+  if (!/^[3456]/.test(digits)) return false;
   let sum = 0;
   let shouldDouble = false;
   for (let i = digits.length - 1; i >= 0; i--) {

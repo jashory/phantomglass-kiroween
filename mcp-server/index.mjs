@@ -273,8 +273,10 @@ function shannonEntropy(str) {
 }
 
 function luhnCheck(numStr) {
+  if (/^\d{4}-\d{2}-\d{2}/.test(String(numStr).trim())) return false;
   const digits = numStr.replace(/\D/g, '');
   if (digits.length < 13 || digits.length > 19) return false;
+  if (!/^[3456]/.test(digits)) return false;
   let sum = 0;
   let alt = false;
   for (let i = digits.length - 1; i >= 0; i--) {

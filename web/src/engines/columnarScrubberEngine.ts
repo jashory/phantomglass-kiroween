@@ -154,8 +154,8 @@ export function scrubCellValue(raw: string): { cleaned: string; scrubbedCount: n
     }
   }
 
-  // Luhn payment card guard
-  if (/\d{4}/.test(out)) {
+  // Luhn payment card guard (exclude ISO-8601 timestamps)
+  if (/\d{4}/.test(out) && !/^\d{4}-\d{2}-\d{2}[T ]/.test(out.trim())) {
     out = out.replace(/\b(?:\d[ -]*?){13,19}\b/g, (match) => {
       if (!validateLuhn(match)) return match;
       scrubbedCount += 1;
@@ -276,7 +276,7 @@ export function profileTabularSample(
           else piiHits++;
         }
       }
-      if (/\d{4}/.test(c) && validateLuhn(c)) {
+      if (/\d{4}/.test(c) && !/^\d{4}-\d{2}-\d{2}[T ]/.test(c.trim()) && validateLuhn(c)) {
         signals.add('CARD_LUHN');
         secretHits++;
       }
