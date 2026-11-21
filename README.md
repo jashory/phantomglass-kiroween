@@ -37,6 +37,18 @@ All `.kiro/` artifacts live at repository root—and **Tab 5 (`Kiro Hooks & MCP`
 
 ---
 
+## Verified v3.0 Live Screenshots (`3:2` High-Resolution Swiss-Obsidian Studio)
+
+| Unified 7-Organ Haunted Bundle (`100/100` Risk) | 1-Click Full Exorcism (`100 -> 0` in `156 ms`) |
+| :---: | :---: |
+| ![Unified Pipeline Haunted](screenshots/01_v3_unified_pipeline_haunted.jpg) | ![Unified Pipeline Exorcised](screenshots/02_v3_unified_exorcised_zero_risk.jpg) |
+
+| Live Kiro Agent Hook Guard (`fetch` / `sendBeacon` Blocked) | Chrome MV3 `v3.0.0` Live Webpage Inline Air-Gap |
+| :---: | :---: |
+| ![Live Kiro Hook Guard](screenshots/03_v3_kiro_hook_interceptor_live.jpg) | ![Chrome MV3 Extension v3.0.0](screenshots/04_v3_chrome_ext_inline_airgap.jpg) |
+
+---
+
 ## Real-World Cloud VM & Cloud Android 14 (API 34) Verification
 
 - **Cloud CI Automated Suite (`tests/forensic-engines.test.mjs`):** Verifies zero `fetch`/`XMLHttpRequest` calls in all `web/src/engines/*.ts`, Android 8–17 + Apple iOS audits, Organ #7 columnar shrinking & SHA-256 chain of custody, 7-tool MCP JSON-RPC 2.0 stdio round-trips, and 6/6 Chaos stress-tests.
