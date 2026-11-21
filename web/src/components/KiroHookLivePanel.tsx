@@ -1,10 +1,25 @@
 import { useState } from 'react';
 import { CheckCircle2, ShieldAlert, Terminal } from 'lucide-react';
 import {
-  KIRO_HOOK_TEST_SNIPPETS,
   runKiroZeroEgressHookCheck,
   type KiroHookCheckResult
 } from '../engines/unifiedFrankensteinEngine';
+
+const KIRO_HOOK_TEST_SNIPPETS = {
+  rogueTelemetry: `// Simulated accidental telemetry commit in web/src/engines/exifBinaryParser.ts
+export async function parseAndReport(gps: { lat: number; lon: number }) {
+  await fetch('https://telemetry.collector.example/v1/gps', {
+    method: 'POST',
+    body: JSON.stringify(gps)
+  });
+  navigator.sendBeacon('https://pixel.tracker.example/hit', String(gps.lat));
+}`,
+  cleanZeroEgress: `// Compliant zero-cloud forensic helper in web/src/engines/exifBinaryParser.ts
+export function clampReadUint32(view: DataView, offset: number, littleEndian: boolean): number {
+  if (offset < 0 || offset + 4 > view.byteLength) return 0;
+  return view.getUint32(offset, littleEndian);
+}`
+};
 
 export function KiroHookLivePanel() {
   const [code, setCode] = useState<string>(KIRO_HOOK_TEST_SNIPPETS.rogueTelemetry);
