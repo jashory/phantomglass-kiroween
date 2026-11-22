@@ -9,7 +9,7 @@
   window.__phantomglassV3Loaded = true;
 
   const RULES = [
-    { name: 'GOOGLE_FIREBASE_API_KEY', re: /\bAIza[0-9A-Za-z_-]{35}\b/g },
+    { name: 'GOOGLE_FIREBASE_API_KEY', re: /\bAIza[0-9A-Za-z_-]{33,40}\b/g },
     { name: 'OPENAI_ANTHROPIC_KEY', re: /\bsk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}\b/g },
     { name: 'HUGGINGFACE_TOKEN', re: /\bhf_[A-Za-z0-9]{20,}\b/g },
     { name: 'AWS_ACCESS_KEY', re: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g },

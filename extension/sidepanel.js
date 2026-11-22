@@ -58,7 +58,7 @@ function redactLocalSecrets(text) {
   let out = String(text || '');
   let count = 0;
   const patterns = [
-    ['GOOGLE_FIREBASE_KEY', /\bAIza[0-9A-Za-z_-]{35}\b/g],
+    ['GOOGLE_FIREBASE_KEY', /\bAIza[0-9A-Za-z_-]{33,40}\b/g],
     ['OPENAI_ANTHROPIC_KEY', /\bsk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}\b/g],
     ['HUGGINGFACE_TOKEN', /\bhf_[A-Za-z0-9]{20,}\b/g],
     ['AWS_KEY', /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g],

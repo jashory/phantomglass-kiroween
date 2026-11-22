@@ -621,12 +621,12 @@ export function runKiroZeroEgressHookCheck(
       heal: (line) => `  // [KIRO-AUTO-HEALED: stripped socket/XHR egress] // ${line.trim()}`
     },
     {
-      pattern: /\b(?:AIza[0-9A-Za-z_-]{35}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/,
+      pattern: /\b(?:AIza[0-9A-Za-z_-]{33,40}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/,
       rule: 'KIRO-ZERO-LEAK-004 (Hardcoded Cloud/Firebase/AI API Key in Public Artifact)',
       remediation: 'Block public commit immediately: scrub embedded API key or restore clean static redirect index.html.',
       heal: (line) =>
         line.replace(
-          /\b(?:AIza[0-9A-Za-z_-]{35}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/g,
+          /\b(?:AIza[0-9A-Za-z_-]{33,40}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/g,
           '[KIRO_AIRGAP_REDACTED_KEY]'
         )
     },
