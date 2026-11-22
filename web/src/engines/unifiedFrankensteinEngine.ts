@@ -98,6 +98,7 @@ export interface KiroHookCheckResult {
     token: string;
     remediation: string;
   }>;
+  autoRemediatedCode: string;
   checkedAt: string;
 }
 
@@ -600,28 +601,48 @@ export function runKiroZeroEgressHookCheck(
   targetFile = 'web/src/engines/exifBinaryParser.ts'
 ): KiroHookCheckResult {
   const lines = sourceCode.split(/\r?\n/);
-  const rules: Array<{ pattern: RegExp; rule: string; remediation: string }> = [
+  const rules: Array<{ pattern: RegExp; rule: string; remediation: string; heal: (line: string) => string }> = [
     {
       pattern: new RegExp('\\b' + 'fet' + 'ch\\s*\\(\\s*[\'"`]https?:\\/\\/', 'i'),
       rule: 'KIRO-ZERO-EGRESS-001 (Forbidden outbound HTTP call)',
-      remediation: 'Remove outbound HTTP calls. All forensic parsing must execute strictly in local browser RAM.'
+      remediation: 'Remove outbound HTTP calls. All forensic parsing must execute strictly in local browser RAM.',
+      heal: (line) => `  // [KIRO-AUTO-HEALED: stripped outbound HTTP call] // ${line.trim()}`
     },
     {
       pattern: /\bnavigator\.sendBeacon\s*\(/i,
       rule: 'KIRO-ZERO-EGRESS-002 (Forbidden background sendBeacon)',
-      remediation: 'Strip telemetry beacons immediately per .kiro/steering/product-and-privacy-constitution.md.'
+      remediation: 'Strip telemetry beacons immediately per .kiro/steering/product-and-privacy-constitution.md.',
+      heal: (line) => `  // [KIRO-AUTO-HEALED: stripped navigator.sendBeacon] // ${line.trim()}`
     },
     {
       pattern: new RegExp('\\bnew\\s+(WebSocket|' + 'XMLHttp' + 'Request)\\s*\\(', 'i'),
       rule: 'KIRO-ZERO-EGRESS-003 (Forbidden raw socket/XHR egress)',
-      remediation: 'Eliminate external sockets or XHR channels from forensic engine modules.'
+      remediation: 'Eliminate external sockets or XHR channels from forensic engine modules.',
+      heal: (line) => `  // [KIRO-AUTO-HEALED: stripped socket/XHR egress] // ${line.trim()}`
+    },
+    {
+      pattern: /\b(?:AIza[0-9A-Za-z_-]{35}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/,
+      rule: 'KIRO-ZERO-LEAK-004 (Hardcoded Cloud/Firebase/AI API Key in Public Artifact)',
+      remediation: 'Block public commit immediately: scrub embedded API key or restore clean static redirect index.html.',
+      heal: (line) =>
+        line.replace(
+          /\b(?:AIza[0-9A-Za-z_-]{35}|(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{22,}|(?:AKIA|ASIA)[0-9A-Z]{16}|sk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ATATT3xFfGF0[A-Za-z0-9_=-]{20,})\b/g,
+          '[KIRO_AIRGAP_REDACTED_KEY]'
+        )
+    },
+    {
+      pattern: /\b_BUILTIN_FB\b|site\/admin-engine\.js/,
+      rule: 'KIRO-ZERO-LEAK-005 (Private SPA Bundle Leaked Into Public GitHub Pages Target)',
+      remediation: 'Never copy private SPA index.html (_BUILTIN_FB / admin-engine.js) into public Pages repo; auto-restore 28-line static redirect index.html.',
+      heal: () => '  /* [KIRO-AUTO-HEALED: stripped private SPA _BUILTIN_FB / admin-engine.js from public Pages artifact] */'
     }
   ];
 
   const violations: KiroHookCheckResult['violations'] = [];
-  lines.forEach((lineText, idx) => {
+  const healedLines = lines.map((lineText, idx) => {
+    let updated = lineText;
     for (const r of rules) {
-      const m = lineText.match(r.pattern);
+      const m = updated.match(r.pattern);
       if (m) {
         violations.push({
           line: idx + 1,
@@ -629,8 +650,10 @@ export function runKiroZeroEgressHookCheck(
           token: m[0],
           remediation: r.remediation
         });
+        updated = r.heal(updated);
       }
     }
+    return updated;
   });
 
   return {
@@ -638,6 +661,7 @@ export function runKiroZeroEgressHookCheck(
     targetFile,
     verdict: violations.length > 0 ? 'BLOCKED' : 'PASSED',
     violations,
+    autoRemediatedCode: healedLines.join('\n'),
     checkedAt: new Date().toISOString()
   };
 }

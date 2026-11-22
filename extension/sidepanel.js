@@ -58,8 +58,14 @@ function redactLocalSecrets(text) {
   let out = String(text || '');
   let count = 0;
   const patterns = [
+    ['GOOGLE_FIREBASE_KEY', /\bAIza[0-9A-Za-z_-]{35}\b/g],
+    ['OPENAI_ANTHROPIC_KEY', /\bsk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}\b/g],
+    ['HUGGINGFACE_TOKEN', /\bhf_[A-Za-z0-9]{20,}\b/g],
     ['AWS_KEY', /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g],
-    ['GITHUB_PAT', /\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b/g],
+    ['GITHUB_PAT', /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b|\bgithub_pat_[A-Za-z0-9_]{22,}\b/g],
+    ['ATLASSIAN_TOKEN', /\bATATT3xFfGF0[A-Za-z0-9_=-]{20,}\b/g],
+    ['SLACK_TOKEN', /\bxox[baprs]-[A-Za-z0-9-]{16,}\b/g],
+    ['PRIVATE_KEY', /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g],
     ['JWT', /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g],
     ['NID_SSN', /\b(?:NID|SSN|Passport)[\s:#-]*[A-Z0-9-]{7,17}\b/gi],
     ['EMAIL', /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g]

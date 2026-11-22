@@ -9,9 +9,15 @@
   window.__phantomglassV3Loaded = true;
 
   const RULES = [
+    { name: 'GOOGLE_FIREBASE_API_KEY', re: /\bAIza[0-9A-Za-z_-]{35}\b/g },
+    { name: 'OPENAI_ANTHROPIC_KEY', re: /\bsk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}\b/g },
+    { name: 'HUGGINGFACE_TOKEN', re: /\bhf_[A-Za-z0-9]{20,}\b/g },
     { name: 'AWS_ACCESS_KEY', re: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g },
-    { name: 'GITHUB_PAT', re: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b/g },
+    { name: 'GITHUB_PAT', re: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b|\bgithub_pat_[A-Za-z0-9_]{22,}\b/g },
+    { name: 'ATLASSIAN_API_TOKEN', re: /\bATATT3xFfGF0[A-Za-z0-9_=-]{20,}\b/g },
+    { name: 'SLACK_TOKEN', re: /\bxox[baprs]-[A-Za-z0-9-]{16,}\b/g },
     { name: 'STRIPE_KEY', re: /\b(?:sk|pk)_(?:live|test)_[A-Za-z0-9]{16,}\b/g },
+    { name: 'PRIVATE_KEY_BLOCK', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g },
     { name: 'JWT_TOKEN', re: /\beyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\b/g }
   ];
 

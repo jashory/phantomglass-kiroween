@@ -299,8 +299,13 @@ export function scanTextSecrets(rawText) {
 
   const rules = [
     { type: 'PRIVATE_KEY_BLOCK', severity: 'CRITICAL', regex: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g },
+    { type: 'GOOGLE_FIREBASE_API_KEY', severity: 'CRITICAL', regex: /\bAIza[0-9A-Za-z_-]{35}\b/g },
+    { type: 'OPENAI_ANTHROPIC_KEY', severity: 'CRITICAL', regex: /\bsk-(?:proj-|ant-|live_|test_)?[A-Za-z0-9_-]{20,}\b/g },
+    { type: 'HUGGINGFACE_TOKEN', severity: 'CRITICAL', regex: /\bhf_[A-Za-z0-9]{20,}\b/g },
     { type: 'AWS_ACCESS_KEY', severity: 'CRITICAL', regex: /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g },
-    { type: 'GITHUB_TOKEN', severity: 'CRITICAL', regex: /\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b/g },
+    { type: 'GITHUB_TOKEN', severity: 'CRITICAL', regex: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}\b|\bgithub_pat_[A-Za-z0-9_]{22,}\b/g },
+    { type: 'ATLASSIAN_API_TOKEN', severity: 'CRITICAL', regex: /\bATATT3xFfGF0[A-Za-z0-9_=-]{20,}\b/g },
+    { type: 'SLACK_TOKEN', severity: 'CRITICAL', regex: /\bxox[baprs]-[A-Za-z0-9-]{16,}\b/g },
     { type: 'BEARER_JWT', severity: 'HIGH', regex: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g },
     { type: 'IBAN_ACCOUNT', severity: 'HIGH', regex: /\b[A-Z]{2}[0-9]{2}[A-Z0-9]{11,26}\b/g },
     { type: 'EMAIL_ADDRESS', severity: 'MEDIUM', regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g },

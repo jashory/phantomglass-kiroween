@@ -2,13 +2,13 @@
   "version": "v1",
   "hooks": [
     {
-      "name": "zero-leak-network-guard",
-      "description": "Blocks accidental introduction of outbound fetch/analytics calls inside core local forensic engines on save.",
+      "name": "zero-leak-network-and-secret-guard",
+      "description": "Blocks accidental introduction of outbound fetch/analytics calls, hardcoded cloud/Firebase/AI API keys (AIza, ghp_, AKIA, sk-, hf_, ATATT), or private SPA overwrites on save and pre-push.",
       "trigger": "PostFileSave",
-      "matcher": "web/src/engines/.*\\.ts$",
+      "matcher": ".*\\.(ts|tsx|js|mjs|html|json)$",
       "action": {
         "type": "agent",
-        "prompt": "Audit the saved forensic engine file against .kiro/steering/product-and-privacy-constitution.md: verify zero outbound fetch/XMLHttpRequest/WebSocket calls exist, verify all DataView reads are bounds-checked, and verify deterministic risk scoring."
+        "prompt": "Audit the saved file against .kiro/steering/product-and-privacy-constitution.md: verify zero outbound fetch/XMLHttpRequest/WebSocket calls exist, verify zero hardcoded Google/Firebase (AIza), GitHub (ghp_), AWS (AKIA), OpenAI/Anthropic (sk-), HuggingFace (hf_), or Atlassian (ATATT) secrets or private SPA (_BUILTIN_FB) leaks exist, and auto-remediate before commit/push."
       }
     }
   ]

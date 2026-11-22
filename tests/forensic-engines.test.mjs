@@ -127,17 +127,25 @@ test('Organ #7 Columnar CSV Shrinker scrubs PII, drops bloat, achieves >75% shri
   assert.equal(res.columnarGzipSha256.length, 64);
 });
 
-test('Air-Gap secret scanner blocks AWS keys, GitHub PATs, Luhn cards, and high-entropy tokens', () => {
+test('Air-Gap secret scanner blocks AWS keys, Google/Firebase AIza keys, OpenAI/HF tokens, GitHub PATs, Luhn cards, and high-entropy tokens', () => {
+  const gkey = 'AIzaSy' + 'D00000000000000000000000000EXAMPLE';
   const sample = `
     AWS=AKIAIOSFODNN7EXAMPLE
+    GOOGLE=${gkey}
+    OPENAI=sk-proj-1234567890abcdefghijklmnop
+    HF=hf_1234567890abcdefghijklmnop
     GH=ghp_9xK2mP7qR4sT8vW1yZ3bC6dF9hJ2kL5nQ8rU
     CARD=4532-0151-1283-0366
     SECRET=Q9vX4mR8pL2kN7wT3zB6cF1hJ5dS9yG4uA8eM2qW
   `;
   const res = scanTextSecrets(sample);
   assert.equal(res.cloudBytesSent, 0);
-  assert.ok(res.totalSecretsBlocked >= 4, `Expected >=4 secrets blocked, got ${res.totalSecretsBlocked}`);
+  assert.ok(res.totalSecretsBlocked >= 7, `Expected >=7 secrets blocked, got ${res.totalSecretsBlocked}`);
+  assert.ok(res.findings.some((f) => f.type === 'GOOGLE_FIREBASE_API_KEY' && f.severity === 'CRITICAL'));
+  assert.ok(res.findings.some((f) => f.type === 'OPENAI_ANTHROPIC_KEY' && f.severity === 'CRITICAL'));
+  assert.ok(res.findings.some((f) => f.type === 'HUGGINGFACE_TOKEN' && f.severity === 'CRITICAL'));
   assert.ok(!res.redactedText.includes('AKIAIOSFODNN7EXAMPLE'));
+  assert.ok(!res.redactedText.includes(gkey));
   assert.ok(!res.redactedText.includes('4532-0151-1283-0366'));
 });
 
