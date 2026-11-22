@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "PhantomGlass v3.0 — Zero-Cloud Live Air-Gap & Forensic Shield",
-  "version": "3.0.0",
-  "description": "Zero-cloud Chrome MV3 companion for PhantomGlass v3.0 (Kiroween 2026): live webpage credential air-gap redaction plus Side-Panel page, Android/iOS, and CSV PII auditing strictly in RAM.",
+  "name": "PhantomGlass v3.1 — Zero-Cloud Live Air-Gap & Forensic Shield",
+  "version": "3.1.0",
+  "description": "Zero-cloud Chrome MV3 companion for PhantomGlass v3.1 (Kiroween 2026): live webpage credential air-gap redaction (AWS, Google AIza, OpenAI, HuggingFace, Atlassian, GitHub, Stripe) plus Side-Panel page, Android/iOS, and CSV PII auditing strictly in RAM.",
   "permissions": ["sidePanel", "activeTab", "scripting"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "action": {
-    "default_title": "Open PhantomGlass v3.0 Privacy Shield"
+    "default_title": "Open PhantomGlass v3.1 Privacy Shield"
   },
   "background": {
     "service_worker": "background.js"

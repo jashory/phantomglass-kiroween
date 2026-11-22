@@ -1,25 +1,25 @@
-# PhantomGlass v3.0 — Unified 7-Organ Zero-Cloud Frankenstein Forensic Exorcist
+# PhantomGlass v3.1 — Unified 7-Organ Zero-Cloud Frankenstein Forensic Exorcist
 
 > **AWS Kiroween 2026 Submission — Frankenstein Category**  
-> **Author:** HM Shihabuddin Jashory (`@jashory`) | **Architecture:** Unified 7-Organ Client-Side Forensic Pipeline + Live Kiro Hook Guard + Chrome MV3 Inline Air-Gap Extension + 7-Tool Standalone MCP Server
+> **Author:** HM Shihabuddin Jashory (`@jashory`) | **Architecture:** Unified 7-Organ Client-Side Forensic Pipeline + Live Kiro Hook Guard (`KIRO-ZERO-LEAK-004/005` Auto-Heal) + Chrome MV3 Inline Air-Gap Extension + 7-Tool Standalone MCP Server
 
 **Live HTTPS Deployment:** [https://jashory.github.io/phantomglass-kiroween/](https://jashory.github.io/phantomglass-kiroween/)  
 **Official Demo Video (YouTube 1080p):** [https://youtu.be/KRKF2oIqYn8](https://youtu.be/KRKF2oIqYn8)  
-**Companion Chrome Manifest V3 Extension (`v3.0.0`):** [https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.0.0](https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.0.0)
+**Companion Chrome Manifest V3 Extension (`v3.1.0`):** [https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.1.0](https://github.com/jashory/phantomglass-kiroween/releases/tag/v3.1.0)
 
 ---
 
 ## True Frankenstein Synergy: 7 Independent Organs Chained Into 1 Unified Pipeline
 
-Instead of forcing investigators or hackathon judges to operate six disconnected tabs, **PhantomGlass v3.0** stitches **seven forensic organs into one unified, zero-cloud (`0` outbound bytes) pipeline** in a restrained Swiss-obsidian studio interface:
+Instead of forcing investigators or hackathon judges to operate six disconnected tabs, **PhantomGlass v3.1** stitches **seven forensic organs into one unified, zero-cloud (`0` outbound bytes) pipeline** in a restrained Swiss-obsidian studio interface:
 
 - **1-Click Haunted Incident Bundle (Zero-Effort Judge Demo) & Multi-File / `.zip` Drop:** Click **Load Haunted Incident Bundle** (or drop your own `.zip` archive or mixed `.jpg`, `.pdf`, `.xml`, `.csv`, `.env` files) to run **all seven organs in one chained pass**:
   1. **Organ #1 — Raw Binary EXIF/GPS & Post-EOI Microscope** (`exifBinaryParser.ts`) extracts GPS coordinates (`23.1667 N, 89.2081 E`), Samsung device fingerprints, and hidden trailing payloads directly from raw `DataView` bytes.
   2. **Organ #2 — Pixel & Metadata Exorcist** (`mediaExorcist.ts`) strips binary metadata via offscreen Canvas re-encoding and re-verifies `0` tags and `0` trailing bytes.
   3. **Organ #3 — Universal Mobile Forensics (Android 8–17 + Apple iOS `Info.plist`) & 3D Topology** (`permissionGraphEngine.ts`, `iosPrivacyEngine.ts`) cross-correlates blanket gallery/location permissions with leaked photo EXIF data and generates version-exact `adb shell pm revoke` + hardened `PrivacyInfo.xcprivacy` patches.
-  4. **Organ #4 — Shannon-Entropy & Luhn Secret Air-Gap** (`secretAirGapEngine.ts`) scrubs AWS/GitHub/Stripe credentials, private keys, and payment cards in local RAM.
+  4. **Organ #4 — Shannon-Entropy & Luhn Secret Air-Gap** (`secretAirGapEngine.ts`) scrubs AWS (`AKIA`), Google/Firebase (`AIza`), OpenAI (`sk-`), HuggingFace (`hf_`), Atlassian (`ATATT`), GitHub, and Stripe credentials, private keys, and payment cards in local RAM.
   5. **Organ #5 — PDF Binary `/OpenAction`, `/JavaScript` & Post-`%%EOF` Microscope** (`pdfForensicEngine.ts`) exposes embedded auto-exec scripts and covert trailing streams.
-  6. **Organ #6 — Chrome MV3 v3.0.0 Inline Webpage Air-Gap Extension (`extension/content.js`) & 7-Tool Local Kiro MCP Server (`mcp-server/index.mjs`)**: Actively detects pasted credentials inside live webpage `<textarea>` / `contenteditable` AI prompts and offers a 1-click inline **Air-Gap Redact** banner before text ever hits Send—plus a zero-dependency JSON-RPC 2.0 stdio MCP server.
+  6. **Organ #6 — Chrome MV3 v3.1.0 Inline Webpage Air-Gap Extension (`extension/content.js`) & 7-Tool Local Kiro MCP Server (`mcp-server/index.mjs`)**: Actively detects pasted credentials inside live webpage `<textarea>` / `contenteditable` AI prompts and offers a 1-click inline **Air-Gap Redact** banner before text ever hits Send—plus a zero-dependency JSON-RPC 2.0 stdio MCP server.
   7. **Organ #7 — Forensic Columnar Dataset Shrinker & WebCrypto SHA-256 Chain of Custody** (`columnarScrubberEngine.ts`) scrubs PII from CSV logs, packs them into compressed `.pgcol.gz` archives (`90–98%` smaller), and signs a unified **WebCrypto SHA-256 Chain-of-Custody Attestation JSON** proving `0` bytes left the browser.
 
 - **Cross-Organ Kill-Chain Correlation & 1-Click Full Exorcism:** The Unified Pipeline automatically correlates findings across files (e.g., *Android Camera-Roll Exfiltration Chain* linking Organ #1 GPS JPEG + Organ #3 `READ_MEDIA_IMAGES` manifest; *Credential & Document Supply-Chain Leak* linking Organ #4 API keys + Organ #5 PDF `/JavaScript` + Organ #7 CSV logs). Clicking **Exorcise Entire Bundle** neutralizes every organ simultaneously (Risk `100 -> 0` in `156 ms`) and unlocks clean downloads.
@@ -28,7 +28,7 @@ Instead of forcing investigators or hackathon judges to operate six disconnected
 
 ## Live Kiro Spec-Driven Architecture & Interactive Zero-Egress Hook Guard
 
-All `.kiro/` artifacts live at repository root—and **Tab 5 (`Kiro Hooks & MCP`)** includes an interactive **Live Kiro Agent Hook Interceptor** simulating `.kiro/hooks/zero-leak-security-audit.json`: inject a rogue telemetry snippet (`fetch`, `sendBeacon`, or `WebSocket`) and watch the Kiro hook immediately block the save with exact line diagnostics before a single outbound byte can ever ship.
+All `.kiro/` artifacts live at repository root—and **Tab 5 (`Kiro Hooks & MCP`)** includes an interactive **Live Kiro Agent Hook Interceptor** simulating `.kiro/hooks/zero-leak-security-audit.json` (`KIRO-ZERO-LEAK-001..005` + 1-Click Auto-Remediate): inject a rogue telemetry snippet (`fetch`, `sendBeacon`, `WebSocket`) or hardcoded `AIza` / `_BUILTIN_FB` bundle secret and watch the Kiro hook immediately block the save with exact line diagnostics and 1-click auto-healing before a single outbound byte can ever ship.
 
 - `.kiro/specs/unified-frankenstein-pipeline/design.md` — Unified 7-organ pipeline, `.zip` extraction & kill-chain correlation architecture
 - `.kiro/specs/phantomglass-core/`, `.kiro/specs/universal-mobile-forensics/`, `.kiro/specs/columnar-dataset-scrubber/`, `.kiro/specs/binary-exorcist-engine/`
